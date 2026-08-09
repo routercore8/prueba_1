@@ -15,6 +15,7 @@
   const rnd = mulberry32(42);
 
   const ventas = [];
+  const DIAS = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
   for (let i = 0; i < 250; i++) {
     const anio = [2023, 2024, 2025][Math.floor(rnd() * 3)];
     const mes = Math.floor(rnd() * 12) + 1;
@@ -22,7 +23,8 @@
     const tipo = TIPOS[Math.floor(rnd() * TIPOS.length)];
     const prod = PRODUCTOS[Math.floor(rnd() * PRODUCTOS.length)];
     const total = PRECIOS[prod] * (Math.floor(rnd() * 5) + 1);
-    ventas.push({ anio, mes, dia, tipo, prod, total });
+    const diaSem = DIAS[new Date(anio, mes - 1, dia).getDay()];
+    ventas.push({ anio, mes, dia, diaSem, tipo, prod, total });
   }
 
   // ---- Utilidades ----
@@ -119,6 +121,20 @@
     });
   }
 
+  function crearDona() {
+    const ctx = document.getElementById("donaSemana").getContext("2d");
+    charts.donaSemana = new Chart(ctx, {
+      type: "doughnut",
+      data: baseData([], [], [], "#fff"),
+      options: opciones({
+        cutout: "62%",
+        plugins: {
+          legend: { position: "bottom", labels: { color: "#e2e8f0", padding: 10 } }
+        }
+      })
+    });
+  }
+
   // ---- Actualización ----
   function actualizar() {
     const d = datosFiltrados();
@@ -129,16 +145,19 @@
     const porProd = {};
     const porMes = {};
     const porAnio = {};
+    const porSemana = {};
     TIPOS.forEach(t => porTipo[t] = 0);
     PRODUCTOS.forEach(p => porProd[p] = 0);
     meses.forEach(m => porMes[m] = 0);
     anios.forEach(a => porAnio[a] = 0);
+    DIAS.forEach(d => porSemana[d] = 0);
 
     d.forEach(v => {
       porTipo[v.tipo] += v.total;
       porProd[v.prod] += v.total;
       porMes[v.mes] += v.total;
       porAnio[v.anio] += v.total;
+      porSemana[v.diaSem] += v.total;
     });
 
     const top = Object.entries(porProd).sort((a, b) => b[1] - a[1])[0];
@@ -175,6 +194,27 @@
     charts.histograma.data.labels = bins.map(([lo, hi]) => `${lo}-${hi}`);
     charts.histograma.data.datasets[0].data = freq;
     charts.histograma.update();
+
+    charts.donaSemana.data = baseData(
+      DIAS, DIAS.map(d => porSemana[d]), PALETTE, "#0f172a"
+    );
+    charts.donaSemana.update();
+
+    const cuerpo = document.querySelector("#tablaVentas tbody");
+    if (!d.length) {
+      cuerpo.innerHTML = '<tr><td colspan="7" class="tabla-vacia">Sin registros para los filtros seleccionados</td></tr>';
+    } else {
+      cuerpo.innerHTML = d.map(v => `
+        <tr>
+          <td>${v.anio}</td>
+          <td>${v.mes}</td>
+          <td>${v.dia}</td>
+          <td>${v.diaSem}</td>
+          <td>${v.tipo}</td>
+          <td>${v.prod}</td>
+          <td class="col-total">${fmt(v.total)}</td>
+        </tr>`).join("");
+    }
   }
 
   selAnio.addEventListener("change", e => { filtroAnio = e.target.value; actualizar(); });
@@ -185,5 +225,6 @@
   crearBarra("barrasMes", "col");
   crearBarra("barrasAnio", "col");
   crearHistograma();
+  crearDona();
   actualizar();
 })();

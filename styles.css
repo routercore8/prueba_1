@@ -121,6 +121,49 @@ body {
   height: 320px;
 }
 
+.table-scroll {
+  max-height: 320px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .85rem;
+}
+
+.tabla thead th {
+  position: sticky;
+  top: 0;
+  background: var(--card-2);
+  color: var(--accent);
+  text-align: left;
+  padding: 10px 12px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.tabla tbody td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.tabla tbody tr:nth-child(even) { background: rgba(56, 189, 248, .04); }
+.tabla tbody tr:hover { background: rgba(56, 189, 248, .10); }
+
+.tabla .col-total { text-align: right; font-weight: 700; color: var(--success); }
+
+.tabla-vacia { text-align: center; padding: 24px; color: var(--muted); }
+
+@media (max-width: 720px) {
+  .tabla thead th, .tabla tbody td { padding: 6px 8px; font-size: .75rem; }
+}
+
 footer {
   margin-top: 28px;
   text-align: center;
