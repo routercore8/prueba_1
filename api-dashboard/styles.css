@@ -188,6 +188,24 @@ body {
 .iss-item .val { font-size: 1.15rem; font-weight: 700; margin-top: 4px; }
 .iss-map { color: var(--accent); text-decoration: none; font-size: .85rem; }
 
+.user { flex-direction: row; align-items: center; gap: 16px; }
+.user img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+}
+.user-info h3 { font-size: 1.1rem; margin-bottom: 4px; }
+.user-info p { color: var(--muted); font-size: .82rem; margin-top: 2px; }
+
+.nombre-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.nombre-item { background: var(--card-2); border-radius: 10px; padding: 10px; text-align: center; }
+.nombre-item .lbl { color: var(--muted); font-size: .72rem; text-transform: uppercase; letter-spacing: .5px; }
+.nombre-item .val { font-size: 1rem; font-weight: 700; margin-top: 4px; }
+
+.zorro img { width: 100%; max-height: 240px; object-fit: cover; border-radius: 10px; }
+
 .loading { color: var(--muted); font-style: italic; }
 .error {
   color: var(--danger);

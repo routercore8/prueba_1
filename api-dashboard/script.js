@@ -181,6 +181,134 @@
   }
   $("#btnFact").addEventListener("click", cargarFact);
 
+  // ===================== Chuck Norris (ChuckNorris.io) =====================
+  const chuck = $("#chuck");
+  async function cargarChuck() {
+    loading(chuck, "Consultando a Chuck Norris...");
+    try {
+      const j = await getJSON("https://api.chucknorris.io/jokes/random");
+      chuck.innerHTML = `<div class="fact-text">🥋 ${j.value}</div>`;
+    } catch (e) {
+      errorEl(chuck, "No se pudo cargar el dato de Chuck.");
+    }
+  }
+  $("#btnChuck").addEventListener("click", cargarChuck);
+
+  // ===================== Consejos (Advice Slip) =====================
+  const advice = $("#advice");
+  async function cargarAdvice() {
+    loading(advice, "Pidiendo un consejo...");
+    try {
+      const d = await getJSON("https://api.adviceslip.com/advice");
+      advice.innerHTML = `<div class="fact-text">🧠 "${d.slip.advice}"</div>`;
+    } catch (e) {
+      errorEl(advice, "No se pudo cargar el consejo.");
+    }
+  }
+  $("#btnAdvice").addEventListener("click", cargarAdvice);
+
+  // ===================== Citas de Kanye (Kanye Rest) =====================
+  const kanye = $("#kanye");
+  async function cargarKanye() {
+    loading(kanye, "Pensando como Kanye...");
+    try {
+      const d = await getJSON("https://api.kanye.rest/");
+      kanye.innerHTML = `<div class="fact-text">🎤 "${d.quote}"</div><div class="joke-punch">— Kanye West</div>`;
+    } catch (e) {
+      errorEl(kanye, "No se pudo cargar la cita.");
+    }
+  }
+  $("#btnKanye").addEventListener("click", cargarKanye);
+
+  // ===================== Perfil aleatorio (Random User) =====================
+  const user = $("#user");
+  async function cargarUser() {
+    loading(user, "Generando perfil...");
+    try {
+      const d = await getJSON("https://randomuser.me/api/");
+      const u = d.results[0];
+      user.innerHTML = `
+        <img src="${u.picture.large}" alt="Perfil">
+        <div class="user-info">
+          <h3>${u.name.title} ${u.name.first} ${u.name.last}</h3>
+          <p>📧 ${u.email}</p>
+          <p>📍 ${u.location.city}, ${u.location.country}</p>
+          <p>🎂 ${new Date(u.dob.date).toLocaleDateString("es")}</p>
+        </div>`;
+    } catch (e) {
+      errorEl(user, "No se pudo generar el perfil.");
+    }
+  }
+  $("#btnUser").addEventListener("click", cargarUser);
+
+  // ===================== Análisis de nombre (Genderize/Agify/Nationalize) =====================
+  const nombreResult = $("#nombreResult");
+  async function analizarNombre() {
+    const nombre = $("#nombre").value.trim();
+    if (!nombre) return;
+    loading(nombreResult, `Analizando "${nombre}"...`);
+    try {
+      const [g, a, n] = await Promise.all([
+        getJSON(`https://api.genderize.io/?name=${nombre}`),
+        getJSON(`https://api.agify.io/?name=${nombre}`),
+        getJSON(`https://api.nationalize.io/?name=${nombre}`)
+      ]);
+      const pais = n.country && n.country.length
+        ? n.country.sort((x, y) => y.probability - x.probability)[0].country_id
+        : "—";
+      const genero = g.gender ? g.gender[0].toUpperCase() + g.gender.slice(1) : "—";
+      nombreResult.innerHTML = `
+        <div class="nombre-grid">
+          <div class="nombre-item"><div class="lbl">Género</div><div class="val">${genero} (${Math.round((g.probability || 0) * 100)}%)</div></div>
+          <div class="nombre-item"><div class="lbl">Edad estimada</div><div class="val">${a.age ?? "—"}</div></div>
+          <div class="nombre-item"><div class="lbl">País probable</div><div class="val">${pais}</div></div>
+        </div>`;
+    } catch (e) {
+      errorEl(nombreResult, "No se pudo analizar el nombre.");
+    }
+  }
+  $("#btnNombre").addEventListener("click", analizarNombre);
+  $("#nombre").addEventListener("keydown", e => { if (e.key === "Enter") analizarNombre(); });
+
+  // ===================== Zorro (Random Fox) =====================
+  const zorro = $("#zorro");
+  async function cargarZorro() {
+    loading(zorro, "Buscando un zorro...");
+    try {
+      const d = await getJSON("https://randomfox.ca/floof/");
+      zorro.innerHTML = `<div class="zorro"><img src="${d.image}" alt="Zorro aleatorio"></div>`;
+    } catch (e) {
+      errorEl(zorro, "No se pudo cargar el zorro.");
+    }
+  }
+  $("#btnZorro").addEventListener("click", cargarZorro);
+
+  // ===================== Rick & Morty (Rick and Morty API) =====================
+  const rick = $("#rick");
+  async function cargarRick() {
+    loading(rick, "Viajando a otra dimensión...");
+    try {
+      const r = await getJSON("https://rickandmortyapi.com/api/character/1");
+      const total = r.id;
+      const totalR = await getJSON("https://rickandmortyapi.com/api/character");
+      const maxId = totalR.info.count;
+      const id = Math.floor(Math.random() * maxId) + 1;
+      const p = await getJSON(`https://rickandmortyapi.com/api/character/${id}`);
+      const estadoColor = p.status === "Alive" ? "var(--success)" : p.status === "Dead" ? "var(--danger)" : "var(--warn)";
+      rick.innerHTML = `
+        <img src="${p.image}" alt="${p.name}">
+        <div class="pokemon-info">
+          <h3>${p.name}</h3>
+          <p><span class="chip">${p.species}</span><span class="chip">${p.gender}</span></p>
+          <p style="color:${estadoColor};font-weight:700">● ${p.status}</p>
+          <p>Origen: ${p.origin.name}</p>
+        </div>`;
+    } catch (e) {
+      errorEl(rick, "No se pudo cargar el personaje.");
+    }
+  }
+  $("#btnRick").addEventListener("click", cargarRick);
+
   // ===================== ISS (wheretheiss.at) =====================
   const iss = $("#iss");
   async function cargarIss() {
@@ -212,6 +340,12 @@
   cargarJoke();
   cargarFact();
   cargarIss();
+  cargarChuck();
+  cargarAdvice();
+  cargarKanye();
+  cargarUser();
+  cargarZorro();
+  cargarRick();
 
   $("#btnRecargar").addEventListener("click", () => {
     cargarClima(climaLat, climaLon, climaCity);
@@ -221,5 +355,11 @@
     cargarJoke();
     cargarFact();
     cargarIss();
+    cargarChuck();
+    cargarAdvice();
+    cargarKanye();
+    cargarUser();
+    cargarZorro();
+    cargarRick();
   });
 })();
