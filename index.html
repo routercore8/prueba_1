@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de Ventas</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">📊</span>
+    <h1>Dashboard de Ventas</h1>
+  </div>
+  <div class="filters">
+    <label for="filtroAnio">Año</label>
+    <select id="filtroAnio"></select>
+    <label for="filtroMes">Mes</label>
+    <select id="filtroMes"></select>
+  </div>
+</header>
+
+<section class="kpis">
+  <div class="kpi"><span class="kpi-label">Ventas totales</span><span class="kpi-value" id="kpiTotal">—</span></div>
+  <div class="kpi"><span class="kpi-label">Transacciones</span><span class="kpi-value" id="kpiCount">—</span></div>
+  <div class="kpi"><span class="kpi-label">Ticket promedio</span><span class="kpi-value" id="kpiPromedio">—</span></div>
+  <div class="kpi"><span class="kpi-label">Producto top</span><span class="kpi-value" id="kpiTop">—</span></div>
+</section>
+
+<main class="grid">
+  <div class="card">
+    <h2>Ventas por Tipo de Venta</h2>
+    <div class="chart-wrap"><canvas id="tortaTipo"></canvas></div>
+  </div>
+  <div class="card">
+    <h2>Ventas por Producto</h2>
+    <div class="chart-wrap"><canvas id="tortaProducto"></canvas></div>
+  </div>
+  <div class="card span2">
+    <h2>Ventas por Mes</h2>
+    <div class="chart-wrap"><canvas id="barrasMes"></canvas></div>
+  </div>
+  <div class="card">
+    <h2>Histograma de Montos</h2>
+    <div class="chart-wrap"><canvas id="histograma"></canvas></div>
+  </div>
+  <div class="card">
+    <h2>Ventas por Año</h2>
+    <div class="chart-wrap"><canvas id="barrasAnio"></canvas></div>
+  </div>
+</main>
+
+<footer>Datos de ejemplo generados con Chart.js + CSS</footer>
+<script src="chart.umd.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

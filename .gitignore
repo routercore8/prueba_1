@@ -1,0 +1,8 @@
+# Archivos de bloqueo de Excel
+~$*.xlsx
+
+# Binario de Tectonic
+bin/
+
+# Repositorios locales
+.git/
