@@ -30,6 +30,43 @@
   }
   const traducirT = texto => traducir(texto).then(t => `<span title="Original: ${texto}">${t}</span>`);
 
+  // ===================== Descarga de imágenes =====================
+  async function blobDeUrl(url) {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw 0;
+      return await res.blob();
+    } catch (e) {
+      const proxy = `https://images.weserv.nl/?url=${url.replace(/^https?:\/\//, "")}`;
+      const res2 = await fetch(proxy);
+      if (!res2.ok) throw 0;
+      return await res2.blob();
+    }
+  }
+
+  async function descargarImagen(url, nombre) {
+    try {
+      const blob = await blobDeUrl(url);
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = nombre;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(a.href);
+    } catch (e) {
+      window.open(url, "_blank");
+    }
+  }
+
+  const btnDescarga = (url, nombre) =>
+    `<button class="dl-btn" data-url="${url}" data-nombre="${nombre}">⬇️ Descargar imagen</button>`;
+
+  document.addEventListener("click", e => {
+    const btn = e.target.closest(".dl-btn");
+    if (btn) descargarImagen(btn.dataset.url, btn.dataset.nombre);
+  });
+
   // ===================== Clima (Open-Meteo) =====================
   const clima = $("#clima");
   let climaLat = 19.43, climaLon = -99.13, climaCity = "Ciudad de México";
@@ -156,6 +193,7 @@
           <h3>#${String(id).padStart(3, "0")} · ${nombreEs}</h3>
           <p>${tipos}</p>
           <p>Altura: ${(p.height / 10).toFixed(1)} m · Peso: ${(p.weight / 10).toFixed(1)} kg</p>
+          ${btnDescarga(img, `pokemon-${id}.png`)}
         </div>`;
     } catch (e) {
       errorEl(pokemon, "No se pudo cargar el Pokémon.");
@@ -169,7 +207,11 @@
     loading(perro, "Buscando un perro...");
     try {
       const d = await getJSON("https://dog.ceo/api/breeds/image/random");
-      perro.innerHTML = `<div class="zorro"><img src="${d.message}" alt="Perro aleatorio"></div>`;
+      const url = d.message;
+      const breed = url.split("/breeds/")[1]?.split("/")[0] || "perro";
+      perro.innerHTML = `
+        <div class="img-frame"><img src="${url}" alt="Perro aleatorio" loading="lazy"></div>
+        ${btnDescarga(url, `${breed}.jpg`)}`;
     } catch (e) {
       errorEl(perro, "No se pudo cargar el perro.");
     }
@@ -263,6 +305,7 @@
           <p>📧 ${u.email}</p>
           <p>📍 ${u.location.city}, ${pais}</p>
           <p>🎂 ${new Date(u.dob.date).toLocaleDateString("es")}</p>
+          ${btnDescarga(u.picture.large, `perfil-${u.name.first}-${u.name.last}.jpg`)}
         </div>`;
     } catch (e) {
       errorEl(user, "No se pudo generar el perfil.");
@@ -306,7 +349,9 @@
     loading(zorro, "Buscando un zorro...");
     try {
       const d = await getJSON("https://randomfox.ca/floof/");
-      zorro.innerHTML = `<div class="zorro"><img src="${d.image}" alt="Zorro aleatorio"></div>`;
+      zorro.innerHTML = `
+        <div class="img-frame"><img src="${d.image}" alt="Zorro aleatorio" loading="lazy"></div>
+        ${btnDescarga(d.image, "zorro.jpg")}`;
     } catch (e) {
       errorEl(zorro, "No se pudo cargar el zorro.");
     }
@@ -332,6 +377,7 @@
           <p><span class="chip">${especie}</span><span class="chip">${genero}</span></p>
           <p style="color:${estadoColor};font-weight:700">● ${estado}</p>
           <p>Origen: ${origen}</p>
+          ${btnDescarga(p.image, `${p.name}.jpeg`)}
         </div>`;
     } catch (e) {
       errorEl(rick, "No se pudo cargar el personaje.");
