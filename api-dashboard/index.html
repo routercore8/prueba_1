@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de APIs Públicas</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">🌐</span>
+    <h1>Dashboard de APIs Públicas</h1>
+  </div>
+  <nav class="nav">
+    <a href="../index.html" class="nav-link">← Dashboard de Ventas</a>
+    <button class="btn" id="btnRecargar">🔄 Recargar todo</button>
+  </nav>
+</header>
+
+<main class="grid">
+
+  <section class="card" id="card-clima">
+    <h2>Clima · Open-Meteo</h2>
+    <div class="card-actions">
+      <input type="text" id="ciudad" placeholder="Ciudad (ej: Madrid)" autocomplete="off">
+      <button class="btn" id="btnClima">Buscar</button>
+    </div>
+    <div class="module" id="clima"></div>
+  </section>
+
+  <section class="card" id="card-crypto">
+    <h2>Criptomonedas · CoinGecko</h2>
+    <div class="card-actions">
+      <select id="cripto"></select>
+    </div>
+    <div class="module" id="crypto">
+      <div class="crypto-price" id="cryptoPrice">—</div>
+      <div class="chart-wrap small"><canvas id="sparkline"></canvas></div>
+    </div>
+  </section>
+
+  <section class="card" id="card-pokemon">
+    <h2>Pokémon · PokeAPI</h2>
+    <button class="btn" id="btnPokemon">🎲 Pokémon aleatorio</button>
+    <div class="module pokemon" id="pokemon"></div>
+  </section>
+
+  <section class="card" id="card-perro">
+    <h2>Perro aleatorio · Dog CEO</h2>
+    <button class="btn" id="btnPerro">🐶 Otro perro</button>
+    <div class="module" id="perro"></div>
+  </section>
+
+  <section class="card" id="card-joke">
+    <h2>Chistes · Official Joke API</h2>
+    <button class="btn" id="btnJoke">😂 Otro chiste</button>
+    <div class="module" id="joke"></div>
+  </section>
+
+  <section class="card" id="card-fact">
+    <h2>Datos curiosos · Useless Facts</h2>
+    <button class="btn" id="btnFact">💡 Otro dato</button>
+    <div class="module" id="fact"></div>
+  </section>
+
+  <section class="card span2" id="card-iss">
+    <h2>Estación Espacial ISS en vivo · wheretheiss.at</h2>
+    <button class="btn" id="btnIss">🛰️ Actualizar posición</button>
+    <div class="module" id="iss"></div>
+  </section>
+
+</main>
+
+<footer>Datos en vivo desde <a href="https://github.com/public-apis/public-apis" target="_blank" rel="noopener">public-apis</a></footer>
+<script src="chart.umd.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
