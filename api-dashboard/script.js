@@ -10,6 +10,26 @@
     return res.json();
   }
 
+  // ===================== Traductor automático (EN → ES) =====================
+  const cacheTraduccion = new Map();
+  async function traducir(texto) {
+    if (!texto) return texto;
+    if (cacheTraduccion.has(texto)) return cacheTraduccion.get(texto);
+    try {
+      const res = await fetch(
+        `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=es&dt=t&q=${encodeURIComponent(texto)}`
+      );
+      const data = await res.json();
+      const trad = data[0].map(seg => seg[0] || "").join("").trim();
+      const resultado = trad || texto;
+      cacheTraduccion.set(texto, resultado);
+      return resultado;
+    } catch (e) {
+      return texto;
+    }
+  }
+  const traducirT = texto => traducir(texto).then(t => `<span title="Original: ${texto}">${t}</span>`);
+
   // ===================== Clima (Open-Meteo) =====================
   const clima = $("#clima");
   let climaLat = 19.43, climaLon = -99.13, climaCity = "Ciudad de México";
@@ -121,16 +141,19 @@
   async function cargarPokemon() {
     loading(pokemon, "Atrapando un Pokémon...");
     try {
-      const r = await getJSON("https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0");
-      const total = r.count;
+      const total = (await getJSON("https://pokeapi.co/api/v2/pokemon?limit=0")).count;
       const id = Math.floor(Math.random() * total) + 1;
       const p = await getJSON(`https://pokeapi.co/api/v2/pokemon/${id}`);
       const img = p.sprites.other["official-artwork"]?.front_default || p.sprites.front_default;
-      const tipos = p.types.map(t => t.type.name).map(n => `<span class="chip">${n}</span>`).join("");
+      const [nombreEs, ...tiposEs] = await Promise.all([
+        traducir(p.name),
+        ...p.types.map(t => traducir(t.type.name))
+      ]);
+      const tipos = tiposEs.map(n => `<span class="chip">${n}</span>`).join("");
       pokemon.innerHTML = `
         <img src="${img}" alt="${p.name}" onerror="this.style.visibility='hidden'">
         <div class="pokemon-info">
-          <h3>#${String(id).padStart(3, "0")} · ${p.name}</h3>
+          <h3>#${String(id).padStart(3, "0")} · ${nombreEs}</h3>
           <p>${tipos}</p>
           <p>Altura: ${(p.height / 10).toFixed(1)} m · Peso: ${(p.weight / 10).toFixed(1)} kg</p>
         </div>`;
@@ -146,7 +169,7 @@
     loading(perro, "Buscando un perro...");
     try {
       const d = await getJSON("https://dog.ceo/api/breeds/image/random");
-      perro.innerHTML = `<img src="${d.message}" alt="Perro aleatorio">`;
+      perro.innerHTML = `<div class="zorro"><img src="${d.message}" alt="Perro aleatorio"></div>`;
     } catch (e) {
       errorEl(perro, "No se pudo cargar el perro.");
     }
@@ -159,9 +182,10 @@
     loading(joke, "Pensando un chiste...");
     try {
       const j = await getJSON("https://official-joke-api.appspot.com/random_joke");
+      const [setup, punch] = await Promise.all([traducir(j.setup), traducir(j.punchline)]);
       joke.innerHTML = `
-        <div class="joke-setup">${j.setup}</div>
-        <div class="joke-punch">${j.punchline}</div>`;
+        <div class="joke-setup">${setup}</div>
+        <div class="joke-punch">${punch}</div>`;
     } catch (e) {
       errorEl(joke, "No se pudo cargar el chiste.");
     }
@@ -174,7 +198,8 @@
     loading(fact, "Buscando un dato curioso...");
     try {
       const f = await getJSON("https://uselessfacts.jsph.pl/api/v2/facts/random?language=en");
-      fact.innerHTML = `<div class="fact-text">💡 ${f.text}</div>`;
+      const texto = await traducir(f.text);
+      fact.innerHTML = `<div class="fact-text">💡 ${texto}</div>`;
     } catch (e) {
       errorEl(fact, "No se pudo cargar el dato.");
     }
@@ -187,7 +212,8 @@
     loading(chuck, "Consultando a Chuck Norris...");
     try {
       const j = await getJSON("https://api.chucknorris.io/jokes/random");
-      chuck.innerHTML = `<div class="fact-text">🥋 ${j.value}</div>`;
+      const texto = await traducir(j.value);
+      chuck.innerHTML = `<div class="fact-text">🥋 ${texto}</div>`;
     } catch (e) {
       errorEl(chuck, "No se pudo cargar el dato de Chuck.");
     }
@@ -200,7 +226,8 @@
     loading(advice, "Pidiendo un consejo...");
     try {
       const d = await getJSON("https://api.adviceslip.com/advice");
-      advice.innerHTML = `<div class="fact-text">🧠 "${d.slip.advice}"</div>`;
+      const texto = await traducir(d.slip.advice);
+      advice.innerHTML = `<div class="fact-text">🧠 "${texto}"</div>`;
     } catch (e) {
       errorEl(advice, "No se pudo cargar el consejo.");
     }
@@ -213,7 +240,8 @@
     loading(kanye, "Pensando como Kanye...");
     try {
       const d = await getJSON("https://api.kanye.rest/");
-      kanye.innerHTML = `<div class="fact-text">🎤 "${d.quote}"</div><div class="joke-punch">— Kanye West</div>`;
+      const texto = await traducir(d.quote);
+      kanye.innerHTML = `<div class="fact-text">🎤 "${texto}"</div><div class="joke-punch">— Kanye West</div>`;
     } catch (e) {
       errorEl(kanye, "No se pudo cargar la cita.");
     }
@@ -227,12 +255,13 @@
     try {
       const d = await getJSON("https://randomuser.me/api/");
       const u = d.results[0];
+      const pais = await traducir(u.location.country);
       user.innerHTML = `
         <img src="${u.picture.large}" alt="Perfil">
         <div class="user-info">
           <h3>${u.name.title} ${u.name.first} ${u.name.last}</h3>
           <p>📧 ${u.email}</p>
-          <p>📍 ${u.location.city}, ${u.location.country}</p>
+          <p>📍 ${u.location.city}, ${pais}</p>
           <p>🎂 ${new Date(u.dob.date).toLocaleDateString("es")}</p>
         </div>`;
     } catch (e) {
@@ -256,10 +285,11 @@
       const pais = n.country && n.country.length
         ? n.country.sort((x, y) => y.probability - x.probability)[0].country_id
         : "—";
-      const genero = g.gender ? g.gender[0].toUpperCase() + g.gender.slice(1) : "—";
+      const genero = g.gender ? await traducir(g.gender) : "—";
+      const pct = g.probability ? Math.round(g.probability * 100) : 0;
       nombreResult.innerHTML = `
         <div class="nombre-grid">
-          <div class="nombre-item"><div class="lbl">Género</div><div class="val">${genero} (${Math.round((g.probability || 0) * 100)}%)</div></div>
+          <div class="nombre-item"><div class="lbl">Género</div><div class="val">${genero} (${pct}%)</div></div>
           <div class="nombre-item"><div class="lbl">Edad estimada</div><div class="val">${a.age ?? "—"}</div></div>
           <div class="nombre-item"><div class="lbl">País probable</div><div class="val">${pais}</div></div>
         </div>`;
@@ -288,20 +318,20 @@
   async function cargarRick() {
     loading(rick, "Viajando a otra dimensión...");
     try {
-      const r = await getJSON("https://rickandmortyapi.com/api/character/1");
-      const total = r.id;
       const totalR = await getJSON("https://rickandmortyapi.com/api/character");
-      const maxId = totalR.info.count;
-      const id = Math.floor(Math.random() * maxId) + 1;
+      const id = Math.floor(Math.random() * totalR.info.count) + 1;
       const p = await getJSON(`https://rickandmortyapi.com/api/character/${id}`);
+      const [especie, genero, estado, origen] = await Promise.all([
+        traducir(p.species), traducir(p.gender), traducir(p.status), traducir(p.origin.name)
+      ]);
       const estadoColor = p.status === "Alive" ? "var(--success)" : p.status === "Dead" ? "var(--danger)" : "var(--warn)";
       rick.innerHTML = `
         <img src="${p.image}" alt="${p.name}">
         <div class="pokemon-info">
           <h3>${p.name}</h3>
-          <p><span class="chip">${p.species}</span><span class="chip">${p.gender}</span></p>
-          <p style="color:${estadoColor};font-weight:700">● ${p.status}</p>
-          <p>Origen: ${p.origin.name}</p>
+          <p><span class="chip">${especie}</span><span class="chip">${genero}</span></p>
+          <p style="color:${estadoColor};font-weight:700">● ${estado}</p>
+          <p>Origen: ${origen}</p>
         </div>`;
     } catch (e) {
       errorEl(rick, "No se pudo cargar el personaje.");

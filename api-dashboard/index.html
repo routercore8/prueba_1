@@ -18,101 +18,123 @@
   </nav>
 </header>
 
-<main class="grid">
+<main>
 
-  <section class="card" id="card-clima">
-    <h2>Clima · Open-Meteo</h2>
-    <div class="card-actions">
-      <input type="text" id="ciudad" placeholder="Ciudad (ej: Madrid)" autocomplete="off">
-      <button class="btn" id="btnClima">Buscar</button>
+  <section class="grupo">
+    <h2 class="grupo-titulo">🌦️ Naturaleza y espacio</h2>
+    <div class="grid">
+      <section class="card" id="card-clima">
+        <h2>Clima · Open-Meteo</h2>
+        <div class="card-actions">
+          <input type="text" id="ciudad" placeholder="Ciudad (ej: Madrid)" autocomplete="off">
+          <button class="btn" id="btnClima">Buscar</button>
+        </div>
+        <div class="module" id="clima"></div>
+      </section>
+      <section class="card" id="card-iss">
+        <h2>ISS en vivo · wheretheiss.at</h2>
+        <button class="btn" id="btnIss">🛰️ Actualizar posición</button>
+        <div class="module" id="iss"></div>
+      </section>
     </div>
-    <div class="module" id="clima"></div>
   </section>
 
-  <section class="card" id="card-crypto">
-    <h2>Criptomonedas · CoinGecko</h2>
-    <div class="card-actions">
-      <select id="cripto"></select>
+  <section class="grupo">
+    <h2 class="grupo-titulo">💹 Finanzas</h2>
+    <div class="grid">
+      <section class="card" id="card-crypto">
+        <h2>Criptomonedas · CoinGecko</h2>
+        <div class="card-actions">
+          <select id="cripto"></select>
+        </div>
+        <div class="module" id="crypto">
+          <div class="crypto-price" id="cryptoPrice">—</div>
+          <div class="chart-wrap small"><canvas id="sparkline"></canvas></div>
+        </div>
+      </section>
     </div>
-    <div class="module" id="crypto">
-      <div class="crypto-price" id="cryptoPrice">—</div>
-      <div class="chart-wrap small"><canvas id="sparkline"></canvas></div>
+  </section>
+
+  <section class="grupo">
+    <h2 class="grupo-titulo">😂 Entretenimiento</h2>
+    <div class="grid">
+      <section class="card" id="card-joke">
+        <h2>Chistes · Official Joke API</h2>
+        <button class="btn" id="btnJoke">😂 Otro chiste</button>
+        <div class="module" id="joke"></div>
+      </section>
+      <section class="card" id="card-fact">
+        <h2>Datos curiosos · Useless Facts</h2>
+        <button class="btn" id="btnFact">💡 Otro dato</button>
+        <div class="module" id="fact"></div>
+      </section>
+      <section class="card" id="card-chuck">
+        <h2>Chuck Norris · ChuckNorris.io</h2>
+        <button class="btn" id="btnChuck">🥋 Otro dato</button>
+        <div class="module" id="chuck"></div>
+      </section>
+      <section class="card" id="card-advice">
+        <h2>Consejos · Advice Slip</h2>
+        <button class="btn" id="btnAdvice">🧠 Otro consejo</button>
+        <div class="module" id="advice"></div>
+      </section>
+      <section class="card" id="card-kanye">
+        <h2>Citas · Kanye Rest</h2>
+        <button class="btn" id="btnKanye">🎤 Otra cita</button>
+        <div class="module" id="kanye"></div>
+      </section>
     </div>
   </section>
 
-  <section class="card" id="card-pokemon">
-    <h2>Pokémon · PokeAPI</h2>
-    <button class="btn" id="btnPokemon">🎲 Pokémon aleatorio</button>
-    <div class="module pokemon" id="pokemon"></div>
-  </section>
-
-  <section class="card" id="card-perro">
-    <h2>Perro aleatorio · Dog CEO</h2>
-    <button class="btn" id="btnPerro">🐶 Otro perro</button>
-    <div class="module" id="perro"></div>
-  </section>
-
-  <section class="card" id="card-joke">
-    <h2>Chistes · Official Joke API</h2>
-    <button class="btn" id="btnJoke">😂 Otro chiste</button>
-    <div class="module" id="joke"></div>
-  </section>
-
-  <section class="card" id="card-fact">
-    <h2>Datos curiosos · Useless Facts</h2>
-    <button class="btn" id="btnFact">💡 Otro dato</button>
-    <div class="module" id="fact"></div>
-  </section>
-
-  <section class="card" id="card-chuck">
-    <h2>Chuck Norris · ChuckNorris.io</h2>
-    <button class="btn" id="btnChuck">🥋 Otro dato</button>
-    <div class="module" id="chuck"></div>
-  </section>
-
-  <section class="card" id="card-advice">
-    <h2>Consejos · Advice Slip</h2>
-    <button class="btn" id="btnAdvice">🧠 Otro consejo</button>
-    <div class="module" id="advice"></div>
-  </section>
-
-  <section class="card" id="card-kanye">
-    <h2>Citas · Kanye Rest</h2>
-    <button class="btn" id="btnKanye">🎤 Otra cita</button>
-    <div class="module" id="kanye"></div>
-  </section>
-
-  <section class="card" id="card-user">
-    <h2>Perfil aleatorio · Random User</h2>
-    <button class="btn" id="btnUser">👤 Otro perfil</button>
-    <div class="module user" id="user"></div>
-  </section>
-
-  <section class="card" id="card-nombre">
-    <h2>Analiza tu nombre · Genderize + Agify + Nationalize</h2>
-    <div class="card-actions">
-      <input type="text" id="nombre" placeholder="Escribe un nombre (ej: lucas)" autocomplete="off">
-      <button class="btn" id="btnNombre">Analizar</button>
+  <section class="grupo">
+    <h2 class="grupo-titulo">🐾 Animales</h2>
+    <div class="grid">
+      <section class="card" id="card-perro">
+        <h2>Perro aleatorio · Dog CEO</h2>
+        <button class="btn" id="btnPerro">🐶 Otro perro</button>
+        <div class="module" id="perro"></div>
+      </section>
+      <section class="card" id="card-zorro">
+        <h2>Zorro aleatorio · Random Fox</h2>
+        <button class="btn" id="btnZorro">🦊 Otro zorro</button>
+        <div class="module" id="zorro"></div>
+      </section>
     </div>
-    <div class="module" id="nombreResult"></div>
   </section>
 
-  <section class="card" id="card-zorro">
-    <h2>Zorro aleatorio · Random Fox</h2>
-    <button class="btn" id="btnZorro">🦊 Otro zorro</button>
-    <div class="module" id="zorro"></div>
+  <section class="grupo">
+    <h2 class="grupo-titulo">👾 Personajes</h2>
+    <div class="grid">
+      <section class="card" id="card-pokemon">
+        <h2>Pokémon · PokeAPI</h2>
+        <button class="btn" id="btnPokemon">🎲 Pokémon aleatorio</button>
+        <div class="module pokemon" id="pokemon"></div>
+      </section>
+      <section class="card" id="card-rick">
+        <h2>Rick &amp; Morty · Rick and Morty API</h2>
+        <button class="btn" id="btnRick">🌀 Personaje aleatorio</button>
+        <div class="module pokemon" id="rick"></div>
+      </section>
+    </div>
   </section>
 
-  <section class="card" id="card-rick">
-    <h2>Rick &amp; Morty · Rick and Morty API</h2>
-    <button class="btn" id="btnRick">🌀 Personaje aleatorio</button>
-    <div class="module pokemon" id="rick"></div>
-  </section>
-
-  <section class="card span2" id="card-iss">
-    <h2>Estación Espacial ISS en vivo · wheretheiss.at</h2>
-    <button class="btn" id="btnIss">🛰️ Actualizar posición</button>
-    <div class="module" id="iss"></div>
+  <section class="grupo">
+    <h2 class="grupo-titulo">👥 Personas</h2>
+    <div class="grid">
+      <section class="card" id="card-user">
+        <h2>Perfil aleatorio · Random User</h2>
+        <button class="btn" id="btnUser">👤 Otro perfil</button>
+        <div class="module user" id="user"></div>
+      </section>
+      <section class="card" id="card-nombre">
+        <h2>Analiza tu nombre · Genderize + Agify + Nationalize</h2>
+        <div class="card-actions">
+          <input type="text" id="nombre" placeholder="Escribe un nombre (ej: lucas)" autocomplete="off">
+          <button class="btn" id="btnNombre">Analizar</button>
+        </div>
+        <div class="module" id="nombreResult"></div>
+      </section>
+    </div>
   </section>
 
 </main>
